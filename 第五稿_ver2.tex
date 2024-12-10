@@ -1,0 +1,79 @@
+\documentclass[twocolumn,a4paper,dvipdfmx]{ieicejsp}
+\usepackage[T1]{fontenc}
+\usepackage{siunitx}
+\usepackage{lmodern}
+\usepackage{textcomp}
+\usepackage{latexsym}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{newenum}
+
+
+
+\title{{\bf 情報フローティングを用いた経路誘導による渋滞緩和に関する考察}
+  {\normalsize \\A Consideration on Congestion Mitigation by Route Guidance Using Information Floating}}
+  \author{
+    池田拓朗 \\ Takuro Ikeda \and
+    宮北和之 \\ Kazuyuki Miyakita \and
+    中野敬介 \\ Keisuke Nakano 
+  }
+  \affliate{
+    新潟大学 \\ Niigata University
+}
+
+\begin{document}
+\maketitle
+\section{まえがき}
+情報フローティング(IF)は，エピデミック通信における直接無線通信を送信可能エリア(TA)だけに制限することにより，無秩序な情報拡散を防ぎながら目的の領域に入ってくる移動体に情報を伝達するための手法である．この通信手法は，通常の情報インフラが利用不可になるような災害の発生時にも有効と考えられており，これを応用し事故などによる進入禁止情報の配信により移動体の行動変化を促すことが考えられている\cite{miyakita_kotuyudo}．近年，豪雪等により高速道路上での渋滞発生が問題となっている．本報告では，高速道路やバイパスのような道路上から一般道へ迂回させ，このような渋滞を軽減することを考える．特に，災害時に移動通信インフラが使えない場合におけるこの問題を考え，IFによる実現手法を検討し評価する．
+
+% \cite{miyakita_kotuyudo}では，設定したエリアを移動体である車が一切通らないように迂回誘導を行っていたが，本報告では，格子状道路網に交通量の多い道路を設定し，その道路から適切な量の車を最短路になるような経路を提示し迂回を行う．その際に2点間までの所要時間を迂回した移動体と迂回しなかった車とで比較する．
+
+\section{提案手法}
+本報告では図\ref{fig:1}のような6000\,m × 4000\,mのサービスエリア(SA)を考え，このSA内に図\ref{fig:1}のような道路網があるものとする．
+各交差点間の距離は500\,mとする．
+この道路網の中央に，一般道の上部に位置するような形で，交通量の多い道路(バイパス)があるものとする．
+車は図\ref{fig:1}の丸で示しているICからのみバイパスに進入，退出できるものとし，片側2車線あるものとする．
+TAは，バイパスの上下などに図\ref{fig:1}のように設定する．
+バイパス以外の道路(一般道)は全て片側1車線であるとする．
+
+車はSAの各端点から一定密度のポアソン過程に従って進入するものとする．バイパスと一般道における進入密度をそれぞれ，$\lambda_b$，$\lambda_g$とする．一般道では，\cite{miyakita_kotuyudo}にあるように，各車は遠回りせず，道路ごとに密度がばらつくような移動モデルに従って移動するものとする．車の速度$v$はその道路の密度$\lambda$が高いほど遅くなるようなモデルに従い，グリーンシールズの公式に最低速度を導入した式$v=\min \{ v_f(1-\frac{\lambda}{0.12}), 5 \}$ km/hに従って決まるものとする．ここでの$v_f$は，バイパス70\,km/h，一般道54\,km/hとする．
+
+本報告では，バイパス上（図\ref{fig:1}の三角の部分）の片側車線で事故が発生し，バイパスの事故発生車線において2車線が1車線に規制されることで渋滞が発生する状況を想定する．提案手法ではその事故を目撃した対向車線の車が，ICの手前のTAでIFを行う．その情報を受け取った事故発生車線側の車のうち割合$p$の車だけが迂回するものとする．$p$の値は，事故情報を提示する確率を制御することなどにより，あらかじめ設定できるものとする．迂回する車は，ICにおいて確率$\frac{1}{2}$でバイパスの上か下の一般道に降りる．その後，事故発生地点の次のICまで迂回を行うものとする．そして，IFにより一般道のTAに蓄積されていた各道路区間の平均通過時間を基にして，この平均通過時間の総和が最小になるような経路を通って事故発生地点の次のICまで移動するものとする．ただし，バイパスの上から降りた車はバイパスの上側の一般道だけを通り，バイパスの下から降りた車はバイパスの下側の一般道だけを通るものとする．このようにすることで，一般道の混雑状況を鑑みつつ迂回する車による道路の混雑を避けることができる．
+
+手法の評価には，迂回した車と迂回しなかった車がIC間を移動するのにかかった時間の平均を用いる．
+
+\section{シミュレーション結果}
+$\lambda_b = 0.02$\,[1/m]，$\lambda_g = 0.01$\,[1/m]，各車の通信可能半径$r = 100$ mとしてシミュレーションを行った．図\ref{fig:2}に結果を示す．結果より，提案手法によってIC間の平均移動時間を大幅に減少できていることがわかる．
+ただし，$p$を大きくして迂回する車を多くしすぎると，今度は一般道が混雑してしまい，平均移動時間は大きくなってしまう．
+$p=0.4$程度のときに，平均移動時間は最も小さくなっており，更に，ICで降りた車と降りなかった車のそれぞれの平均移動時間もほぼ平等になっている．
+これらのことから，本報告で示したような手法により経路誘導を行う際には，経路誘導を行う車の割合$p$を適切に制御することが重要であると考えられる．
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[b]{0.48\linewidth}
+    \centering
+    \includegraphics[width=0.98\linewidth]{格子状道路網_長方形.png} % 画像1のファイル名を記入
+    \caption{道路網}
+    \label{fig:1}
+  \end{minipage}\hfill
+  \begin{minipage}[b]{0.48\linewidth}
+    \centering
+    \includegraphics[width=0.98\linewidth]{図_折れ線グラフ_2.png} % 画像2のファイル名を記入
+    \caption{平均移動時間}
+    \label{fig:2}
+  \end{minipage}
+\end{figure}
+
+
+\begin{thebibliography}{99}
+  % \setlength{\itemsep}{0pt} % 行間を0ptに設定
+  \bibitem{miyakita_kotuyudo}
+  宮北, 柄沢, 稲川, 中野, “情報フローティングによる交通誘導に関する考察,” 電子情報通信学会論文誌, vol.J101-B, No.8, pp.603-618, 2018.
+  % \bibitem{kotuyudo_eng}
+  % K.Nakano and K.Miyakita, "Analysis of Information Floating with a Fixed Source of Information Considering Behavior Changes of Mobile Nodes," IEICE Trans. Fundamentals, vol.E99-A, no.8, pp.1259-1268, Aug. 2016.
+  \bibitem{green_seals}
+  F. L. Mannering, “Principles of Highway Engineering and Traffic Analysis,” John Wiley \& Sons, Inc., New York, NY, USA, 1998.
+\end{thebibliography}
+\end{document}
